@@ -48,7 +48,6 @@
 
     function close() {
       host.remove();
-      window.__doclabOpen = false;
     }
 
     async function save() {
@@ -102,8 +101,12 @@
 
   chrome.runtime.onMessage.addListener(msg => {
     if (msg?.type !== "doclab:open-note") return;
-    if (window.__doclabOpen) return;
-    window.__doclabOpen = true;
+    const existing = document.getElementById(HOST_ID);
+    if (existing) {
+      const ta = existing.shadowRoot?.querySelector(".doclab-body");
+      if (ta) ta.focus();
+      return;
+    }
     buildOverlay(msg.defaultFormat || "md");
   });
 })();

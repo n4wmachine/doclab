@@ -85,18 +85,27 @@ async function takeScreenshot(tab) {
 }
 
 async function ensureContentScript(tabId) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ["content.js"]
+  });
+}
+
+async function openNote(tab) {
+  const { defaultFormat } = await getSettings();
   try {
-    await chrome.scripting.insertCSS({
-      target: { tabId },
-      files: ["overlay.css"]
-    });
-    await chrome.scripting.executeScript({
-      target: { tabId },
-      files: ["content.js"]
+    await ensureContentScript(tab.id);
+  } catch (e) {
+    console.warn("doclab: cannot inject into this tab:", e?.message || e);
+    return;
+  }
+  try {
+    await chrome.tabs.sendMessage(tab.id, {
+      type: "doclab:open-note",
+      defaultFormat
     });
   } catch (e) {
-    // Some pages (chrome://, Web Store) disallow injection. Nothing we can do.
-    console.warn("doclab: cannot inject into this tab:", e.message);
+    console.warn("doclab: open-note message failed:", e?.message || e);
   }
 }
 
@@ -105,12 +114,7 @@ chrome.commands.onCommand.addListener(async command => {
   if (!tab) return;
 
   if (command === "open-note") {
-    await ensureContentScript(tab.id);
-    const { defaultFormat } = await getSettings();
-    chrome.tabs.sendMessage(tab.id, {
-      type: "doclab:open-note",
-      defaultFormat
-    });
+    await openNote(tab);
   } else if (command === "take-screenshot") {
     try {
       await takeScreenshot(tab);
