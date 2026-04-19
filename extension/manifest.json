@@ -19,15 +19,13 @@
   "commands": {
     "open-note": {
       "suggested_key": {
-        "default": "Alt+Shift+N",
-        "mac": "Alt+Shift+N"
+        "default": "Ctrl+Shift+Y"
       },
       "description": "Open quick note overlay on the current page"
     },
     "take-screenshot": {
       "suggested_key": {
-        "default": "Alt+Shift+P",
-        "mac": "Alt+Shift+P"
+        "default": "Ctrl+Shift+U"
       },
       "description": "Save a screenshot of the visible tab"
     }
