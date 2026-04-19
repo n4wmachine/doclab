@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "doclab — Quick Notes & Screenshots",
+  "description": "Save quick notes (md/txt) and viewport screenshots from any page into a fixed Downloads subfolder via keyboard shortcuts.",
+  "version": "0.1.0",
+  "permissions": ["downloads", "activeTab", "scripting", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_title": "doclab — open options",
+    "default_popup": "options.html"
+  },
+  "commands": {
+    "open-note": {
+      "suggested_key": {
+        "default": "Alt+Shift+N",
+        "mac": "Alt+Shift+N"
+      },
+      "description": "Open quick note overlay on the current page"
+    },
+    "take-screenshot": {
+      "suggested_key": {
+        "default": "Alt+Shift+P",
+        "mac": "Alt+Shift+P"
+      },
+      "description": "Save a screenshot of the visible tab"
+    }
+  }
+}

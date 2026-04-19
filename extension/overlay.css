@@ -1,0 +1,114 @@
+.doclab-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: rgba(10, 10, 14, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.doclab-modal {
+  width: min(720px, 92vw);
+  max-height: 80vh;
+  background: #ffffff;
+  color: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  gap: 10px;
+}
+
+.doclab-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doclab-top .doclab-name {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #d7d7dc;
+  border-radius: 8px;
+  outline: none;
+  background: #fafafc;
+  color: #1a1a1a;
+}
+
+.doclab-top .doclab-format {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d7d7dc;
+  background: #fafafc;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.doclab-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  color: #555;
+}
+.doclab-close:hover { background: #eee; }
+
+.doclab-body {
+  flex: 1;
+  min-height: 260px;
+  resize: vertical;
+  padding: 12px;
+  font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  border: 1px solid #d7d7dc;
+  border-radius: 8px;
+  background: #fcfcfd;
+  color: #1a1a1a;
+  outline: none;
+}
+.doclab-body:focus { border-color: #4f7cff; }
+
+.doclab-bottom {
+  justify-content: flex-end;
+}
+.doclab-hint {
+  margin-right: auto;
+  color: #707078;
+  font-size: 12px;
+}
+.doclab-status {
+  color: #707078;
+  font-size: 12px;
+}
+
+.doclab-save {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #2f6bff;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+.doclab-save:hover { background: #2554d8; }
+.doclab-save:disabled { opacity: 0.6; cursor: default; }
+
+@media (prefers-color-scheme: dark) {
+  .doclab-modal { background: #1c1c22; color: #f1f1f3; }
+  .doclab-top .doclab-name,
+  .doclab-top .doclab-format,
+  .doclab-body {
+    background: #26262d;
+    border-color: #3a3a42;
+    color: #f1f1f3;
+  }
+  .doclab-close { color: #aaa; }
+  .doclab-close:hover { background: #2e2e36; }
+  .doclab-hint, .doclab-status { color: #9a9aa2; }
+}
