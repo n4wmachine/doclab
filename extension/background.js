@@ -80,8 +80,27 @@ async function takeScreenshot(tab) {
     format: "png"
   });
   const base = sanitizeSegment(tab.title) || "screenshot";
-  const filename = `${sanitizeSubfolder(subfolder)}/${base}_${timestamp()}.png`;
+  const filename = `${sanitizeSubfolder(subfolder) || "doclab"}/${base}_${timestamp()}.png`;
   return downloadFile({ filename, url: dataUrl });
+}
+
+function flashBadge(ok) {
+  chrome.action.setBadgeText({ text: ok ? "✓" : "!" });
+  chrome.action.setBadgeBackgroundColor({ color: ok ? "#2a8a3a" : "#c53030" });
+  setTimeout(() => chrome.action.setBadgeText({ text: "" }), 1800);
+}
+
+async function toast(tabId, text, ok) {
+  flashBadge(ok);
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["content.js"]
+    });
+    await chrome.tabs.sendMessage(tabId, { type: "doclab:toast", text, ok });
+  } catch (_) {
+    // restricted page (chrome://, Web Store, etc.) — badge is our only channel
+  }
 }
 
 async function ensureContentScript(tabId) {
@@ -118,8 +137,11 @@ chrome.commands.onCommand.addListener(async command => {
   } else if (command === "take-screenshot") {
     try {
       await takeScreenshot(tab);
+      await toast(tab.id, "Screenshot saved", true);
     } catch (e) {
+      const msg = e?.message || String(e);
       console.error("doclab screenshot failed:", e);
+      await toast(tab.id, "Screenshot failed: " + msg, false);
     }
   }
 });

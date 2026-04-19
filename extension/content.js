@@ -99,14 +99,42 @@
     setTimeout(() => bodyEl.focus(), 0);
   }
 
-  chrome.runtime.onMessage.addListener(msg => {
-    if (msg?.type !== "doclab:open-note") return;
-    const existing = document.getElementById(HOST_ID);
-    if (existing) {
-      const ta = existing.shadowRoot?.querySelector(".doclab-body");
-      if (ta) ta.focus();
-      return;
+  const TOAST_ID = "doclab-toast-host";
+
+  function showToast(text, ok) {
+    let host = document.getElementById(TOAST_ID);
+    if (!host) {
+      host = document.createElement("div");
+      host.id = TOAST_ID;
+      host.attachShadow({ mode: "open" });
+      document.documentElement.appendChild(host);
     }
-    buildOverlay(msg.defaultFormat || "md");
+    const color = ok ? "#2a8a3a" : "#c53030";
+    host.shadowRoot.innerHTML = `
+      <div style="
+        position: fixed; right: 16px; bottom: 16px; z-index: 2147483647;
+        background: ${color}; color: #fff;
+        padding: 10px 14px; border-radius: 8px;
+        font: 13px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        max-width: 360px; word-break: break-word;
+      ">${text.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div>
+    `;
+    clearTimeout(window.__doclabToastTimer);
+    window.__doclabToastTimer = setTimeout(() => host.remove(), 2500);
+  }
+
+  chrome.runtime.onMessage.addListener(msg => {
+    if (msg?.type === "doclab:open-note") {
+      const existing = document.getElementById(HOST_ID);
+      if (existing) {
+        const ta = existing.shadowRoot?.querySelector(".doclab-body");
+        if (ta) ta.focus();
+        return;
+      }
+      buildOverlay(msg.defaultFormat || "md");
+    } else if (msg?.type === "doclab:toast") {
+      showToast(msg.text || "", msg.ok !== false);
+    }
   });
 })();
